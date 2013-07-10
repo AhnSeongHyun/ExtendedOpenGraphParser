@@ -47,10 +47,6 @@ class test(unittest.TestCase):
     	self.assertEqual(data['type'], 'website')
     	self.assertEqual(data['url'], 'http://indf.tistory.com/')
          
-
-
-     
-
     
 if __name__ == '__main__':
 	unittest.main()
