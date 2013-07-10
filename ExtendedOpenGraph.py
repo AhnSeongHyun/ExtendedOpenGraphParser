@@ -9,10 +9,27 @@ except ImportError:
     from BeautifulSoup import BeautifulSoup
 
 
-def parse(url):
+
+def parse(url=None,html=None):
 	parseResult = {}
+
+	if url is None and html is not None:
+		parseResult = parseHtml(html)
+
+	elif url is not None:
+		parseResult = parseUrl(url)
+	else:
+		raise Exception("url and html are None.")
+ 
+	return parseResult
+
+def parseHtml(html):
+	# TODO : Implementation
+	pass
+
+def parseUrl(url):
+	parseResult ={}
 	ogpResult = opengraph.OpenGraph(url=url)
-	 
 
 	if ogpResult.is_valid() == True:
 		
@@ -21,36 +38,30 @@ def parse(url):
 		
 		if ogpResult['image'] is not None:
 			parseResult['image'] = ogpResult['image']
+		else:
+			# TODO : getMainImage(url)
 		 
 		if ogpResult['title'] is not None:
 			parseResult['title'] = ogpResult['title']
+		else:
+			# TODO : getTitle(url)
 
 		if ogpResult['type'] is not None:
 			parseResult['type'] = ogpResult['type']
-		
-
 	else:
-		parseResult = parseNonVaildUrl(url, parseResult)
-
-
+		parseResult = parseNonVaildUrl(url, parseResult) 
 
 	return parseResult; 
 
 
 def parseNonVaildUrl(url, parseResult):
 
-	#url 에서 html 을 가져온다. 
+	#getHtml from url 
 	html = getHtml(url)
-	#html 에서 title을 가져온다. 
+
 	parseResult['title'] = getTitle(html)
-
-	#첫번째 이미지를 가져온다. 
-	parseResult['image'] = getPresentImage(html)
-
-	#url을 가져온다.  
+	parseResult['image'] = getMainImage(html)
 	parseResult['url'] = getUrl(url)
-
-	#type을 가져온다. 
 	parseResult['type'] = getType(html)
 
 	return parseResult; 
@@ -59,21 +70,25 @@ def parseNonVaildUrl(url, parseResult):
 def getType(html):
 	return None
 
-def getPresentImage(html):
+def getMainImage(html):
 
-	presntImage =""
+	mainImage =""
 	soup = BeautifulSoup(html)
 	images = soup.html.find_all('img')
 	
 	for image in images: 
 		if '.gif' not in image['src']:
-			presntImage = image['src'] #first image
+			mainImage = image['src'] #first image
 
-	return presntImage
+	return mainImage
 
 
 def getUrl(url):
 	return url
+
+def getType(url):
+	#default 'website'
+	return 'website'
 
 def getTitle(html):
 
@@ -87,19 +102,9 @@ def getTitle(html):
 			break 
 	return title
 
-
 def getHtml(url):
 	raw = urllib2.urlopen(url)
 	html = raw.read() 
 	return html
 
-
-if __name__ == '__main__':
-	
-	print "youytube"
-	url1 = "http://www.youtube.com/watch?v=q3ixBmDzylQ"
-	print(parse(url1)) 
-
-	print "tistory"
-	url2 = "http://indf.tistory.com/"
-	print(parse(url2))
+ 
