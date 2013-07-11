@@ -24,39 +24,100 @@ def parse(url=None,html=None):
 	return parseResult
 
 def parseHtml(html):
-	# TODO : Implementation
-	pass
+	parseResult ={}
+	ogpResult = opengraph.OpenGraph(html=html)
+	
+	if ogpResult.is_valid() is True:
+		parseResult = pasrseValidHtml(html,ogpResult)
+
+	else :
+		parseResult = parseNonValidHtml(html)
+	return parseResult
+
+
+def pasrseValidHtml(html, ogpResult):
+	parseResult ={}
+
+	for key in ogpResult.keys():
+		parseResult[key] = ogpResult[key];
+
+	#_url은 뺀다. 
+	if parseResult.has_key("_url") is True:
+		parseResult.pop("_url", None)
+
+	#required 요소가 없으면 가져와야 한다. 
+	if parseResult.has_key('url') is False:
+		parseResult['url'] = getUrl(html=html)
+		
+	if parseResult.has_key('image') is False:
+		parseResult['image'] = getMainImage(html);
+
+	if parseResult.has_key('title') is False:
+		parseResult['title'] = getTitle(html);
+
+	if parseResult.has_key('type') is False:
+		parseResult['type'] = getType(html=html)
+
+	return parseResult;
+
+ 
+
+
+def parseNonValidHtml(html):
+	parseResult = {}
+
+	parseResult['title'] = getTitle(html)
+	parseResult['image'] = getMainImage(html)
+	parseResult['url'] = getUrl(html=html)
+	parseResult['type'] = getType(html=html)
+
+	return parseResult; 
+
 
 def parseUrl(url):
 	parseResult ={}
 	ogpResult = opengraph.OpenGraph(url=url)
 
-	if ogpResult.is_valid() == True:
-		
-		if ogpResult['_url'] is not None:
-			parseResult['url'] = ogpResult['_url']
-		
-		if ogpResult['image'] is not None:
-			parseResult['image'] = ogpResult['image']
-		else:
-			# TODO : getMainImage(url)
-		 
-		if ogpResult['title'] is not None:
-			parseResult['title'] = ogpResult['title']
-		else:
-			# TODO : getTitle(url)
-
-		if ogpResult['type'] is not None:
-			parseResult['type'] = ogpResult['type']
+	if ogpResult.is_valid() == True:		
+		parseResult = parseValidUrl(url, ogpResult)
 	else:
-		parseResult = parseNonVaildUrl(url, parseResult) 
+		parseResult = parseNonVaildUrl(url) 
 
 	return parseResult; 
 
 
-def parseNonVaildUrl(url, parseResult):
+def parseValidUrl(url, ogpResult):
+
+	parseResult ={}
+
+	for key in ogpResult.keys():
+		parseResult[key] = ogpResult[key];
+
+	#_url은 뺀다. 
+	if parseResult.has_key("_url") is True:
+		parseResult.pop("_url", None)
+
+	html = getHtml(url);
+
+	#required 요소가 없으면 가져와야 한다.
+	if parseResult.has_key('url') is False:
+		parseResult['url'] = getUrl(url=url)
+		
+	if parseResult.has_key('image') is False:
+		parseResult['image'] = getMainImage(html);
+
+	if parseResult.has_key('title') is False:
+		parseResult['title'] = getTitle(html);
+
+	if parseResult.has_key('type') is False:
+		parseResult['type'] = getType(url=url)
+
+	return parseResult
+
+def parseNonVaildUrl(url):
 
 	#getHtml from url 
+	parseResult = {}
 	html = getHtml(url)
 
 	parseResult['title'] = getTitle(html)
@@ -66,9 +127,7 @@ def parseNonVaildUrl(url, parseResult):
 
 	return parseResult; 
 
-
-def getType(html):
-	return None
+ 
 
 def getMainImage(html):
 
@@ -83,10 +142,14 @@ def getMainImage(html):
 	return mainImage
 
 
-def getUrl(url):
-	return url
+def getUrl(url=None, html=None):
 
-def getType(url):
+	if url is not None:
+		return url
+	else:
+		return None
+
+def getType(url=None, html=None):
 	#default 'website'
 	return 'website'
 
