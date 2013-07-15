@@ -14,12 +14,24 @@ pip install ExtendedOpenGraphParser
 
 
 ##Usage 
+<b>input : url </b>
     >>> import ExtendedOpenGraph
-	>>> data = ExtendedOpenGraph.parse("http://www.twitter.com")
+    >>> data = ExtendedOpenGraph.parse(url="http://www.twitter.com")
 	>>> for key, value in data.items():
 	...     print "%-15s => %s" % (key, value)
 	...
 	url             => http://www.twitter.com
-	image           => https://abs.twimg.com/a/1373572090/t1/img/front_page/cricket@2x.jpg
+	image           => https://abs.twimg.com/a/1373572090/t1/img/front_page/jp-mountain@2x.jpg
 	type            => website
 	title           => 트위터 
+
+<b> input : html </b>
+	>>> ex_html="&lt;html&gt;&lt;head&gt;&lt;title&gt;ExtendOpenGraph&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;img src='logo.png'/&gt;&lt;/body&gt;&lt;/html&gt;"
+	>>> data = ExtendedOpenGraph.parse(html=ex_html)
+	>>> for key, value in data.items():
+	...     print "%-15s => %s" % (key, value)
+	...
+	url             => None
+	image           => logo.png
+	type            => website
+	title           => ExtendOpenGraph
