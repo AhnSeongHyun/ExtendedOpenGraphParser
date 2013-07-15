@@ -3,7 +3,7 @@ Open Graph Protocol spec: http://ogp.me/
 
 
 ##Installation
-pip install ExtendedOpenGraphParser
+pip install ExtendedOpenGraph
 
 ##Features
 <li> Based on opengraph </li>
