@@ -136,8 +136,9 @@ def getMainImage(html):
 	images = soup.html.find_all('img')
 	
 	for image in images: 
-		if '.gif' not in image['src']:
-			mainImage = image['src'] #first image
+		if image.has_attr('src') is True:
+			if '.gif' not in image['src']:
+				mainImage = image['src'] #first image
 
 	return mainImage
 
@@ -145,7 +146,12 @@ def getMainImage(html):
 def getUrl(url=None, html=None):
 
 	if url is not None:
-		return url
+		  
+		lastIdx = url.rfind("/")
+		if url[lastIdx-1] == "/":# it is http://
+			return url 
+		else:
+			return url[:lastIdx]
 	else:
 		return None
 
@@ -156,14 +162,8 @@ def getType(url=None, html=None):
 def getTitle(html):
 
 	title=""
-	linebyhtml = html.split("\n")
-	for line in linebyhtml:
-		if "<title>" in line:
-			st= line.find('>')
-			ed= line.rfind('<')
-			title = line[st+1:ed]
-			break 
-	return title
+	soup = BeautifulSoup(html)  
+	return soup.html.head.title.contents[0]
 
 def getHtml(url):
 	raw = urllib2.urlopen(url)

@@ -47,11 +47,13 @@ class test(unittest.TestCase):
     
     def test_not_valid_html(self):
         data = ExtendedOpenGraph.parse(html=NOT_VALID_HTML)
+        #print data
+        
         self.assertEqual(data['title'],'The Rock (1996)')
         self.assertEqual(data['image'] ,'http://pdnf.png')
         self.assertEqual(data['type'],'website')
         self.assertEqual(data['url'], None)
-        #print data
+        
 
     def test_valid_url(self):
     	URL = "http://www.youtube.com/watch?v=q3ixBmDzylQ"
@@ -68,12 +70,44 @@ class test(unittest.TestCase):
     	URL = "http://indf.tistory.com/"	
     	data = ExtendedOpenGraph.parse(url=URL)
  
+        #print data
     	self.assertEqual(data['title'],'INDF :: ')
     	self.assertEqual(data['image'] ,'http://i1.daumcdn.net/cfs.tistory/v/0/static/admin/editor/ccl_black04.png')
     	self.assertEqual(data['type'], 'website')
-    	self.assertEqual(data['url'], 'http://indf.tistory.com/')
+    	self.assertEqual(data['url'], 'http://indf.tistory.com')
         
+
+    def test_urls(self):
+        urls = [
+                "http://www.twitter.com",
+                "http://github.com",
+                "http://facebook.com",
+                "http://amazon.com",
+                "http://naleejang.tistory.com",
+                "http://www.crummy.com/software/BeautifulSoup/bs3/documentation.html#contents"
+                ]
+        try:
+            url =""
+            for url in urls:    
+                data = ExtendedOpenGraph.parse(url=url)
+                print data
+        except Exception, e:
+            raise
+        else:
+            pass
+        finally:
+            pass
+ 
         #print data
     
 if __name__ == '__main__':
 	unittest.main()
+
+
+
+
+
+
+
+
+
