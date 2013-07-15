@@ -15,8 +15,9 @@ pip install ExtendedOpenGraphParser
 
 ##Usage 
 <b>input : url </b>
+
     >>> import ExtendedOpenGraph
-    >>> data = ExtendedOpenGraph.parse(url="http://www.twitter.com")
+	>>> data = ExtendedOpenGraph.parse(url="http://www.twitter.com")
 	>>> for key, value in data.items():
 	...     print "%-15s => %s" % (key, value)
 	...
@@ -26,7 +27,8 @@ pip install ExtendedOpenGraphParser
 	title           => 트위터 
 
 <b> input : html </b>
-	>>> ex_html="&lt;html&gt;&lt;head&gt;&lt;title&gt;ExtendOpenGraph&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;img src='logo.png'/&gt;&lt;/body&gt;&lt;/html&gt;"
+
+	>>> ex_html="<html><head><title>ExtendOpenGraph</title></head><body><img src='logo.png'/></body></html>"
 	>>> data = ExtendedOpenGraph.parse(html=ex_html)
 	>>> for key, value in data.items():
 	...     print "%-15s => %s" % (key, value)
@@ -35,3 +37,6 @@ pip install ExtendedOpenGraphParser
 	image           => logo.png
 	type            => website
 	title           => ExtendOpenGraph
+    
+    
+    
