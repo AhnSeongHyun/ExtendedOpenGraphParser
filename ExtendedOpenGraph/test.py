@@ -60,7 +60,6 @@ class test(unittest.TestCase):
     	data = ExtendedOpenGraph.parse(url=URL)
 
     	self.assertEqual(data['title'],'While My Guitar Gently Weeps')
-    	self.assertEqual(data['image'] ,'http://i1.ytimg.com/vi/q3ixBmDzylQ/hqdefault.jpg?feature=og')
     	self.assertEqual(data['type'],'video')
     	self.assertEqual(data['url'], 'http://www.youtube.com/watch?v=q3ixBmDzylQ')
 
@@ -90,7 +89,6 @@ class test(unittest.TestCase):
             url =""
             for url in urls:    
                 data = ExtendedOpenGraph.parse(url=url)
-                print data
         except Exception, e:
             raise
         else:
