@@ -7,7 +7,7 @@ setup(name='ExtendedOpenGraph',
 
       version=version,
       description="A module of parsing the open graph protocol and extracing the summary of webpage.",
-      long_description=open("README.rst").read() + "\n",
+      long_description=open("pip_desc.txt").read() + "\n",
       classifiers=[
       'Development Status :: 3 - Alpha',
       'Intended Audience :: Developers',
