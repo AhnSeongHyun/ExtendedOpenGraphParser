@@ -22,6 +22,7 @@ Usage
 =============
 <b>input : url</b>
 <br/>
+
     import ExtendedOpenGraph
     data = ExtendedOpenGraph.parse(url="http://www.twitter.com")
     for key, value in data.items():
@@ -31,6 +32,7 @@ Usage
     image           => https://abs.twimg.com/a/1373572090/t1/img/front_page/jp-mountain@2x.jpg
     type            => website
     title           => 트위터 
+    
 <br/><br/>
 <b>input : html</b>
 <br/>
