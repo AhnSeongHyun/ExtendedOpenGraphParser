@@ -2,6 +2,9 @@ ExtendedOpenGraphParser is a python module for parsing the Open Graph ProtocoL.
 Open Graph Protocol spec: http://ogp.me/
 
 
+[![Build Status](https://travis-ci.org/AhnSeongHyun/ExtendedOpenGraphParser.png)](https://travis-ci.org/AhnSeongHyun/ExtendedOpenGraphParser)
+
+
 Installation
 =============
 pip install ExtendedOpenGraph
