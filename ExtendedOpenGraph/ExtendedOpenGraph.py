@@ -1,173 +1,162 @@
 # -*- coding: utf-8 -*-
  
 import opengraph
-import re
 import urllib2
+
 try:
     from bs4 import BeautifulSoup
 except ImportError:
     from BeautifulSoup import BeautifulSoup
 
 
+def parse(url=None, html=None):
 
-def parse(url=None,html=None):
-	parseResult = {}
+    if url is None and html is not None:
+        return parse_html(html)
 
-	if url is None and html is not None:
-		parseResult = parseHtml(html)
+    elif url is not None:
+        return parse_url(url)
 
-	elif url is not None:
-		parseResult = parseUrl(url)
-	else:
-		raise Exception("url and html are None.")
- 
-	return parseResult
-
-def parseHtml(html):
-	parseResult ={}
-	ogpResult = opengraph.OpenGraph(html=html)
-	
-	if ogpResult.is_valid() is True:
-		parseResult = pasrseValidHtml(html,ogpResult)
-
-	else :
-		parseResult = parseNonValidHtml(html)
-	return parseResult
+    else:
+        raise Exception("url and html are None.")
 
 
-def pasrseValidHtml(html, ogpResult):
-	parseResult ={}
+def parse_html(html):
+    ogp_result = opengraph.OpenGraph(html=html)
 
-	for key in ogpResult.keys():
-		parseResult[key] = ogpResult[key];
+    if ogp_result.is_valid() is True:
+        return parse_valid_html(html, ogp_result)
 
-	#_url은 뺀다. 
-	if parseResult.has_key("_url") is True:
-		parseResult.pop("_url", None)
-
-	#required 요소가 없으면 가져와야 한다. 
-	if parseResult.has_key('url') is False:
-		parseResult['url'] = getUrl(html=html)
-		
-	if parseResult.has_key('image') is False:
-		parseResult['image'] = getMainImage(html);
-
-	if parseResult.has_key('title') is False:
-		parseResult['title'] = getTitle(html);
-
-	if parseResult.has_key('type') is False:
-		parseResult['type'] = getType(html=html)
-
-	return parseResult;
-
- 
+    else:
+        return parse_non_valid_html(html)
 
 
-def parseNonValidHtml(html):
-	parseResult = {}
+def parse_valid_html(html, ogp_result):
+    parse_result = dict()
 
-	parseResult['title'] = getTitle(html)
-	parseResult['image'] = getMainImage(html)
-	parseResult['url'] = getUrl(html=html)
-	parseResult['type'] = getType(html=html)
+    for key in ogp_result.keys():
+        parse_result[key] = ogp_result[key]
 
-	return parseResult; 
+    # pop _url
+    if ('_url' in parse_result) is True:
+        parse_result.pop("_url", None)
 
+    # if required factor, must get.
+    if ('url' in parse_result) is False:
+        parse_result['url'] = get_url(html=html)
 
-def parseUrl(url):
-	parseResult ={}
-	ogpResult = opengraph.OpenGraph(url=url)
+    if ('image' in parse_result) is False:
+        parse_result['image'] = get_main_image(html)
 
-	if ogpResult.is_valid() == True:		
-		parseResult = parseValidUrl(url, ogpResult)
-	else:
-		parseResult = parseNonVaildUrl(url) 
+    if ('title' in parse_result) is False:
+        parse_result['title'] = get_title(html)
 
-	return parseResult; 
+    if ('type' in parse_result) is False:
+        parse_result['type'] = get_type(html=html)
 
-
-def parseValidUrl(url, ogpResult):
-
-	parseResult ={}
-
-	for key in ogpResult.keys():
-		parseResult[key] = ogpResult[key];
-
-	#_url은 뺀다. 
-	if parseResult.has_key("_url") is True:
-		parseResult.pop("_url", None)
-
-	html = getHtml(url);
-
-	#required 요소가 없으면 가져와야 한다.
-	if parseResult.has_key('url') is False:
-		parseResult['url'] = getUrl(url=url)
-		
-	if parseResult.has_key('image') is False:
-		parseResult['image'] = getMainImage(html);
-
-	if parseResult.has_key('title') is False:
-		parseResult['title'] = getTitle(html);
-
-	if parseResult.has_key('type') is False:
-		parseResult['type'] = getType(url=url)
-
-	return parseResult
-
-def parseNonVaildUrl(url):
-
-	#getHtml from url 
-	parseResult = {}
-	html = getHtml(url)
-
-	parseResult['title'] = getTitle(html)
-	parseResult['image'] = getMainImage(html)
-	parseResult['url'] = getUrl(url)
-	parseResult['type'] = getType(html)
-
-	return parseResult; 
-
- 
-
-def getMainImage(html):
-
-	mainImage =""
-	soup = BeautifulSoup(html)
-	images = soup.html.find_all('img')
-	
-	for image in images: 
-		if image.has_attr('src') is True:
-			if '.gif' not in image['src']:
-				mainImage = image['src'] #first image
-
-	return mainImage
+    return parse_result
 
 
-def getUrl(url=None, html=None):
+def parse_non_valid_html(html):
+    parse_result = dict()
 
-	if url is not None:
-		  
-		lastIdx = url.rfind("/")
-		if url[lastIdx-1] == "/":# it is http://
-			return url 
-		else:
-			return url[:lastIdx]
-	else:
-		return None
+    parse_result['title'] = get_title(html)
+    parse_result['image'] = get_main_image(html)
+    parse_result['url'] = get_url(html=html)
+    parse_result['type'] = get_type(html=html)
 
-def getType(url=None, html=None):
-	#default 'website'
-	return 'website'
+    return parse_result
 
-def getTitle(html):
 
-	title=""
-	soup = BeautifulSoup(html)  
-	return soup.html.head.title.contents[0]
+def parse_url(url):
+    ogp_result = opengraph.OpenGraph(url=url)
 
-def getHtml(url):
-	raw = urllib2.urlopen(url)
-	html = raw.read() 
-	return html
+    if ogp_result.is_valid() is True:
+        return parse_valid_url(url, ogp_result)
+    else:
+        return parse_non_valid_url(url)
 
- 
+
+def parse_valid_url(url, ogp_result):
+
+    parse_result = {}
+
+    for key in ogp_result.keys():
+        parse_result[key] = ogp_result[key]
+
+    # pop _url
+    if ('_url' in parse_result) is True:
+        parse_result.pop("_url", None)
+
+    html = get_html(url)
+
+    # if required factor, must get.
+    if ('url' in parse_result) is False:
+        parse_result['url'] = get_url(url=url)
+
+    if ('image' in parse_result) is False:
+        parse_result['image'] = get_main_image(html)
+
+    if ('title' in parse_result) is False:
+        parse_result['title'] = get_title(html)
+
+    if ('type' in parse_result) is False:
+        parse_result['type'] = get_type(url=url)
+
+    return parse_result
+
+
+def parse_non_valid_url(url):
+
+    #getHtml from url
+    parse_result = {}
+    html = get_html(url)
+
+    parse_result['title'] = get_title(html)
+    parse_result['image'] = get_main_image(html)
+    parse_result['url'] = get_url(url=url)
+    parse_result['type'] = get_type(html=html)
+
+    return parse_result
+
+
+def get_main_image(html):
+
+    main_image = ""
+    soup = BeautifulSoup(html)
+    images = soup.html.find_all('img')
+
+    for image in images:
+        if image.has_attr('src') is True:
+            if '.gif' not in image['src']:
+                main_image = image['src']  # first image
+
+    return main_image
+
+
+def get_url(url=None, html=None):
+
+    if url is not None:
+        last_idx = url.rfind("/")
+        if url[last_idx-1] == "/":  # it is http://
+            return url
+        else:
+            return url[:last_idx]
+    else:
+        return None
+
+
+def get_type(url=None, html=None):
+    # default 'website'
+    return 'website'
+
+
+def get_title(html):
+    soup = BeautifulSoup(html)
+    return soup.html.head.title.contents[0]
+
+
+def get_html(url):
+    raw = urllib2.urlopen(url)
+    html = raw.read()
+    return html
