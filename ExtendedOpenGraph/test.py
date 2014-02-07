@@ -7,8 +7,7 @@ import unittest
 import ExtendedOpenGraph
 
 
-
-VALID_HTML = """
+valid_html = """
 <html xmlns:og="http://ogp.me/ns#">
 <head>
 <title>The Rock (1996)</title>
@@ -21,8 +20,7 @@ VALID_HTML = """
 """
 
 
-
-NOT_VALID_HTML = """
+non_valid_html = """
 <html>
 <head>
 <title>The Rock (1996)</title>
@@ -34,47 +32,41 @@ NOT_VALID_HTML = """
 """
 
 
-
-class test(unittest.TestCase):
+class Test(unittest.TestCase):
 
     def test_valid_html(self):
-    	data = ExtendedOpenGraph.parse(html=VALID_HTML)
-        self.assertEqual(data['title'],'The Rock')
-        self.assertEqual(data['image'] ,'http://ia.media-imdb.com/images/rock.jpg')
-        self.assertEqual(data['type'],'movie')
-        self.assertEqual(data['url'], "http://www.imdb.com/title/tt0117500/")
-        #print data
+        data = ExtendedOpenGraph.parse(html=valid_html)
+        self.assertEqual(data['title'], 'The Rock')
+        self.assertEqual(data['image'], 'http://ia.media-imdb.com/images/rock.jpg')
+        self.assertEqual(data['type'], 'movie')
+        self.assertEqual(data['url'], 'http://www.imdb.com/title/tt0117500/')
     
     def test_not_valid_html(self):
-        data = ExtendedOpenGraph.parse(html=NOT_VALID_HTML)
-        #print data
+        data = ExtendedOpenGraph.parse(html=non_valid_html)
         
-        self.assertEqual(data['title'],'The Rock (1996)')
-        self.assertEqual(data['image'] ,'http://pdnf.png')
-        self.assertEqual(data['type'],'website')
+        self.assertEqual(data['title'], 'The Rock (1996)')
+        self.assertEqual(data['image'], 'http://pdnf.png')
+        self.assertEqual(data['type'], 'website')
         self.assertEqual(data['url'], None)
-        
 
     def test_valid_url(self):
-    	URL = "http://www.youtube.com/watch?v=q3ixBmDzylQ"
-    	data = ExtendedOpenGraph.parse(url=URL)
+        url = "http://www.youtube.com/watch?v=q3ixBmDzylQ"
+        data = ExtendedOpenGraph.parse(url=url)
 
-    	self.assertEqual(data['title'],'While My Guitar Gently Weeps')
-    	self.assertEqual(data['type'],'video')
-    	self.assertEqual(data['url'], 'http://www.youtube.com/watch?v=q3ixBmDzylQ')
+        self.assertEqual(data['title'], 'While My Guitar Gently Weeps')
+        self.assertEqual(data['type'], 'video')
+        self.assertEqual(data['url'], 'http://www.youtube.com/watch?v=q3ixBmDzylQ')
 
         #print data
         
     def test_not_valid_url(self):
-    	URL = "http://indf.tistory.com/"	
-    	data = ExtendedOpenGraph.parse(url=URL)
- 
-        #print data
-    	self.assertEqual(data['title'],'INDF :: ')
-    	self.assertEqual(data['image'] ,'http://i1.daumcdn.net/cfs.tistory/v/0/static/admin/editor/ccl_black04.png')
-    	self.assertEqual(data['type'], 'website')
-    	self.assertEqual(data['url'], 'http://indf.tistory.com')
-        
+        url = "http://indf.tistory.com/"
+        data = ExtendedOpenGraph.parse(url=url)
+
+        self.assertEqual(data['title'], 'INDF :: ')
+        self.assertEqual(data['image'] , 'http://i1.daumcdn.net/cfs.tistory/v/0/static/admin/editor/ccl_black04.png')
+        self.assertEqual(data['type'], 'website')
+        self.assertEqual(data['url'], 'http://indf.tistory.com')
 
     def test_urls(self):
         urls = [
@@ -86,20 +78,19 @@ class test(unittest.TestCase):
                 "http://www.crummy.com/software/BeautifulSoup/bs3/documentation.html#contents"
                 ]
         try:
-            url =""
+
             for url in urls:    
-                data = ExtendedOpenGraph.parse(url=url)
+                ExtendedOpenGraph.parse(url=url)
         except Exception, e:
             raise
         else:
             pass
         finally:
             pass
- 
-        #print data
-    
+
+
 if __name__ == '__main__':
-	unittest.main()
+    unittest.main()
 
 
 

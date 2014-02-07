@@ -15,8 +15,7 @@ Features
 * If not exist Open Graph properties in meta tag, it is able to parse basic Metadata.
 * Input URL and HTML.
 * Output python dictionary.
-* Like Facebook. 
-
+* Like Facebook.
 
 Usage
 =============

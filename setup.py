@@ -1,12 +1,11 @@
 from setuptools import setup, find_packages
-import sys, os
 
-version = '0.1'
+version = '0.2'
 
 setup(name='ExtendedOpenGraph',
 
       version=version,
-      description="A module of parsing the open graph protocol and extracing the summary of webpage.",
+      description="A module of parsing the open graph protocol and extracing the summary of the web page.",
       long_description=open("pip_desc.txt").read() + "\n",
       classifiers=[
       'Development Status :: 3 - Alpha',
