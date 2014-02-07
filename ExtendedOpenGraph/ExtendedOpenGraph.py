@@ -46,7 +46,7 @@ def parse_valid_html(html, ogp_result):
         parse_result['url'] = get_url(html=html)
 
     if ('image' in parse_result) is False:
-        parse_result['image'] = get_main_image(html)
+        parse_result['image'] = get_image(html)
 
     if ('title' in parse_result) is False:
         parse_result['title'] = get_title(html)
@@ -61,7 +61,7 @@ def parse_non_valid_html(html):
     parse_result = dict()
 
     parse_result['title'] = get_title(html)
-    parse_result['image'] = get_main_image(html)
+    parse_result['image'] = get_image(html)
     parse_result['url'] = get_url(html=html)
     parse_result['type'] = get_type(html=html)
 
@@ -71,7 +71,7 @@ def parse_non_valid_html(html):
 def parse_url(url):
     ogp_result = opengraph.OpenGraph(url=url)
 
-    if ogp_result.is_valid() is True:
+    if ogp_result.is_valid():
         return parse_valid_url(url, ogp_result)
     else:
         return parse_non_valid_url(url)
@@ -95,7 +95,7 @@ def parse_valid_url(url, ogp_result):
         parse_result['url'] = get_url(url=url)
 
     if ('image' in parse_result) is False:
-        parse_result['image'] = get_main_image(html)
+        parse_result['image'] = get_image(html)
 
     if ('title' in parse_result) is False:
         parse_result['title'] = get_title(html)
@@ -113,30 +113,55 @@ def parse_non_valid_url(url):
     html = get_html(url)
 
     parse_result['title'] = get_title(html)
-    parse_result['image'] = get_main_image(html)
+    parse_result['image'] = get_image(html)
     parse_result['url'] = get_url(url=url)
     parse_result['type'] = get_type(html=html)
 
     return parse_result
 
 
-def get_main_image(html):
+def get_image(html):
 
-    main_image = ""
+    img_url = get_meta_itemprop_image(html)
+
+    if img_url:
+        return img_url
+    else:
+        return get_main_image(html)
+
+
+def get_meta_itemprop_image(html):
     soup = BeautifulSoup(html)
-    images = soup.html.find_all('img')
+    meta_tags = soup.html.head.find_all('meta')
 
-    for image in images:
-        if image.has_attr('src') is True:
-            if '.gif' not in image['src']:
-                main_image = image['src']  # first image
+    img_url = None
+    for meta_tag in meta_tags:
+        if meta_tag.get('itemprop') == 'image':
+            img_url = meta_tag.get('content')
+            break
+
+    return img_url
+
+
+def get_main_image(html=None):
+
+    main_image = ''
+
+    if html:
+        soup = BeautifulSoup(html)
+        images = soup.html.find_all('img')
+
+        for image in images:
+            if image.has_attr('src') is True:
+                if '.gif' not in image['src']:
+                    main_image = image['src']  # first image
 
     return main_image
 
 
 def get_url(url=None, html=None):
 
-    if url is not None:
+    if url:
         last_idx = url.rfind("/")
         if url[last_idx-1] == "/":  # it is http://
             return url
@@ -160,3 +185,7 @@ def get_html(url):
     raw = urllib2.urlopen(url)
     html = raw.read()
     return html
+
+
+if __name__ == '__main__':
+    print parse(url='http://google.co.kr')
