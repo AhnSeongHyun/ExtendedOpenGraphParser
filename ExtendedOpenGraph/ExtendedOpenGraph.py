@@ -144,8 +144,16 @@ def get_link_rel_shortcut_icon(soup=None):
         img_url = None
         for link_tag in link_tags:
             link_tag_rel = link_tag.get('rel')
-            if u'shortcut' in link_tag_rel and u'icon' in link_tag_rel:
+            if link_tag_rel is not None \
+                and u'shortcut' in link_tag_rel \
+                and u'icon' in link_tag_rel:
+
                 img_url = link_tag.get('href')
+                break
+
+
+        if not img_url:
+
 
     return img_url
 

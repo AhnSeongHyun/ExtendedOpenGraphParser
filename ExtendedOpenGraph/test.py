@@ -64,7 +64,7 @@ class Test(unittest.TestCase):
         data = ExtendedOpenGraph.parse(url=url)
 
         self.assertEqual(data['title'], 'INDF :: ')
-        self.assertEqual(data['image'] , 'http://i1.daumcdn.net/cfs.tistory/v/0/static/admin/editor/ccl_black04.png')
+        self.assertEqual(data['image'], '/favicon.ico')
         self.assertEqual(data['type'], 'website')
         self.assertEqual(data['url'], 'http://indf.tistory.com')
 
