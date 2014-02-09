@@ -120,35 +120,52 @@ def parse_non_valid_url(url):
     return parse_result
 
 
-def get_image(html):
+def get_image(html=None):
 
-    img_url = get_meta_itemprop_image(html)
+    if html:
+        soup = BeautifulSoup(html)
+        img_url = get_meta_itemprop_image(soup)
 
-    if img_url:
-        return img_url
-    else:
-        return get_main_image(html)
+        if img_url:
+            return img_url
+        else:
+            img_url = get_link_rel_shortcut_icon(soup)
 
+            if img_url:
+                return img_url
+            else:
+                return get_main_image(soup)
 
-def get_meta_itemprop_image(html):
-    soup = BeautifulSoup(html)
-    meta_tags = soup.html.head.find_all('meta')
+def get_link_rel_shortcut_icon(soup=None):
+    if soup:
 
-    img_url = None
-    for meta_tag in meta_tags:
-        if meta_tag.get('itemprop') == 'image':
-            img_url = meta_tag.get('content')
-            break
+        link_tags = soup.html.head.find_all('link')
+
+        img_url = None
+        for link_tag in link_tags:
+            link_tag_rel = link_tag.get('rel')
+            if u'shortcut' in link_tag_rel and u'icon' in link_tag_rel:
+                img_url = link_tag.get('href')
+
+    return img_url
+
+def get_meta_itemprop_image(soup=None):
+
+    if soup:
+        meta_tags = soup.html.head.find_all('meta')
+
+        img_url = None
+        for meta_tag in meta_tags:
+            if meta_tag.get('itemprop') == 'image':
+                img_url = meta_tag.get('content')
+                break
 
     return img_url
 
 
-def get_main_image(html=None):
-
+def get_main_image(soup=None):
     main_image = ''
-
-    if html:
-        soup = BeautifulSoup(html)
+    if soup:
         images = soup.html.find_all('img')
 
         for image in images:
@@ -188,4 +205,4 @@ def get_html(url):
 
 
 if __name__ == '__main__':
-    print parse(url='http://google.co.kr')
+    print parse(url='http://facebook.com')
