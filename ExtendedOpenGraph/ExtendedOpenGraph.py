@@ -152,8 +152,6 @@ def get_link_rel_shortcut_icon(soup=None):
                 break
 
 
-        if not img_url:
-
 
     return img_url
 
