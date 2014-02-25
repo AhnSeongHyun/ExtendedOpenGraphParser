@@ -5,12 +5,12 @@ version = '0.3'
 setup(name='ExtendedOpenGraph',
 
       version=version,
-      description="A module of parsing the open graph protocol and extracing the summary of the web page.",
+      description="A module of parsing the open graph protocol and extracting the summary of the web page.",
       long_description=open("pip_desc.txt").read() + "\n",
       classifiers=[
       'Development Status :: 3 - Alpha',
       'Intended Audience :: Developers',
-      'Programming Language :: Python',
+      'Programming Language :: Python :: 2.7',
       'Topic :: Text Processing :: Markup :: HTML',
       'Topic :: Software Development :: Libraries :: Python Modules',
       ], 
